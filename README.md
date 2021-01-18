@@ -16,3 +16,4 @@ keylogger
 * nao
 
 # ライセンス
+Apache2.0
